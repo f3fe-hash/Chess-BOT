@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #include "chess.h"
+#include "eval.h"
 
 typedef struct ChessBot_t
 {

@@ -18,7 +18,7 @@ void DeleteChessBot(ChessBot_t* bot)
 int Search(ChessBot_t* bot, int depth)
 {
     if (depth == 0)
-        return 0; // evaluate position
+        return EvaluatePosition(bot->chessboard);
 
     bool SideToMove = bot->chessboard->turn;
 
