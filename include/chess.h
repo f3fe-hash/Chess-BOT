@@ -23,8 +23,18 @@ typedef struct Move_t
 
 typedef struct ChessBoard_t
 {
+    // 0 = black
+    // 1 = white
+    bool turn;
+    
     // ...
 } ChessBoard_t;
+
+// Create and initialize a blank chessboard.
+ChessBoard_t* NewChessBoard();
+
+// Free the chess board
+void DeleteChessboard(ChessBoard_t* board);
 
 // Make a move on the chess board.
 // Takes in a constant pointer to a chess board, and a constant move.
@@ -38,7 +48,8 @@ void UndoMove(ChessBoard_t* const board, const Move_t move);
 // Takes in a constant pointer to a constant chess board, and a color value.
 // 0 = black
 // 1 = white
-Move_t* GetLegalMoves(const ChessBoard_t* const board, const bool color);
+// num_moves is a pointer to a uint8_t that the caller passes and returns the size of the returned array.
+Move_t* GetLegalMoves(const ChessBoard_t* const board, const bool color, uint8_t* num_moves);
 
 // See if a certain color is in check in the current position.
 // Takes in a constant pointer to a constant chess board, and a color value.
