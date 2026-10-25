@@ -22,18 +22,18 @@ int Search(ChessBot_t* bot, int depth)
 
     bool SideToMove = bot->chessboard->turn;
 
-    if (IsCheckmate(bot->chessboard, SideToMove))
-    {
-        return SideToMove == 1 ? MATE_SCORE : -MATE_SCORE;
-    }
-
-    if (IsStalemate(bot->chessboard, SideToMove))
-    {
-        return 0;
-    }
-
     uint8_t num_moves = 0;
     Move_t* moves = GetLegalMoves(bot->chessboard, SideToMove, num_moves);
+
+    if (num_moves == 0)
+    {
+        if (IsCheck(bot->chessboard, SideToMove))
+            // Checkmate.
+            return SideToMove == 1 ? MATE_SCORE : -MATE_SCORE;
+        else
+            // Stalemate.
+            return 0;
+    }
 
     int best_eval = SideToMove == 1 ? INT32_MIN : INT32_MAX;
 
@@ -61,4 +61,47 @@ int Search(ChessBot_t* bot, int depth)
     }
 
     return best_eval;
+}
+
+Move_t SearchMove(ChessBot_t* bot, int depth)
+{
+    bool SideToMove = bot->chessboard->turn;
+
+    uint8_t num_moves = 0;
+    Move_t* moves = GetLegalMoves(bot->chessboard, SideToMove, num_moves);
+
+    if (num_moves == 0)
+    {
+        return (Move_t){};
+    }
+
+    int best_eval = SideToMove == 1 ? INT32_MIN : INT32_MAX;
+    Move_t best_move;
+
+    for (int i = 0; i < num_moves; i++)
+    {
+        MakeMove(bot->chessboard, moves[i]);
+        int eval = Search(bot, depth - 1);
+        UndoMove(bot, moves[i]);
+
+        // Update best eval
+        if (SideToMove == 1)
+        {
+            if (eval > best_eval)
+            {
+                best_eval = eval;
+                best_move = moves[i];
+            }
+        }
+        else
+        {
+            if (eval > best_eval)
+            {
+                best_eval = eval;
+                best_move = moves[i];
+            }
+        }
+    }
+
+    return best_move;
 }

@@ -20,3 +20,5 @@ void DeleteChessBot(ChessBot_t* bot);
 
 // Search a position to a given depth, and return the evaluation
 int Search(ChessBot_t* bot, int depth);
+
+Move_t SearchMove(ChessBot_t* bot, int depth);
