@@ -69,6 +69,5 @@ bool IsCheckmate(const ChessBoard_t* const board, const bool color);
 // 1 = white
 bool IsStaleMate(const ChessBoard_t* const board, const bool color);
 
-
 // Loads a FEN into the chessboard.
 void LoadFen(ChessBoard_t* const board, const char* fen);
