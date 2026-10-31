@@ -39,20 +39,20 @@ int Search(ChessBot_t* bot, int depth) {
     for (int i = 0; i < num_moves; i++) {
         // Search to the next depth.
         MakeMove(bot->chessboard, moves[i]);
-        int eval = Search(bot, depth - 1);
+        int eval_cp = Search(bot, depth - 1);
         UndoMove(bot, moves[i]);
 
         // Update best eval
         if (SideToMove == 1) {
             // White. Keep the highest eval.
-            if (eval > best_eval) {
-                best_eval = eval;
+            if (eval_cp > best_eval) {
+                best_eval = eval_cp;
             }
         }
         else {
             // Black. Keep the lowest eval.
-            if (eval > best_eval) {
-                best_eval = eval;
+            if (eval_cp > best_eval) {
+                best_eval = eval_cp;
             }
         }
     }

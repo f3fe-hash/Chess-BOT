@@ -7,8 +7,7 @@
 #include "chess.h"
 #include "eval.h"
 
-typedef struct ChessBot_t
-{
+typedef struct ChessBot_t {
     ChessBoard_t* chessboard;
 } ChessBot_t;
 
