@@ -13,7 +13,7 @@ void DeleteChessBot(ChessBot_t* bot) {
     free(bot);
 }
 
-int Search(ChessBot_t* bot, int depth) {
+int Search(ChessBot_t* bot, int depth, int alpha, int beta) {
     if (depth == 0)
         // Static eval
         return EvaluatePosition(bot->chessboard);
@@ -39,7 +39,7 @@ int Search(ChessBot_t* bot, int depth) {
     for (int i = 0; i < num_moves; i++) {
         // Search to the next depth.
         MakeMove(bot->chessboard, moves[i]);
-        int eval_cp = Search(bot, depth - 1);
+        int eval_cp = Search(bot, depth - 1, alpha, beta);
         UndoMove(bot, moves[i]);
 
         // Update best eval
@@ -48,13 +48,26 @@ int Search(ChessBot_t* bot, int depth) {
             if (eval_cp > best_eval) {
                 best_eval = eval_cp;
             }
+
+            // Update alpha
+            if (eval_cp > alpha) {
+                alpha = eval_cp;
+            }
         }
         else {
             // Black. Keep the lowest eval.
             if (eval_cp > best_eval) {
                 best_eval = eval_cp;
             }
+
+            if (eval_cp < beta) {
+                beta = eval_cp;
+            }
         }
+
+        // Prune. A better move was available up the search tree.
+        if (beta <= alpha)
+            break;
     }
 
     return best_eval;
@@ -77,7 +90,7 @@ Move_t SearchMove(ChessBot_t* bot, int depth) {
     for (int i = 0; i < num_moves; i++) {
         // Search to the next depth.
         MakeMove(bot->chessboard, moves[i]);
-        int eval = Search(bot, depth - 1);
+        int eval = Search(bot, depth - 1, INT32_MIN, INT32_MAX);
         UndoMove(bot, moves[i]);
 
         // Update best eval
