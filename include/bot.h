@@ -7,9 +7,11 @@
 
 #include "chess.h"
 #include "eval.h"
+#include "transposition_table.h"
 
 typedef struct ChessBot_t {
     ChessBoard_t* chessboard;
+    TranspositionTable_t* tt;
 } ChessBot_t;
 
 // Create a new chess bot instance

@@ -65,8 +65,12 @@ void StoreTTEntry(TranspositionTable_t* tt, uint64_t hash, uint8_t depth, int ev
     TranspositionTableEntry_t* bucket = tt->buckets[bucket_idx];
 
     for (int i = 0; i < ENTRIES_PER_BUCKET; i++) {
-        if (bucket[i].bound == TTBOUND_NONE) {
-            bucket[i] = entry; // Write it.
+        TranspositionTableEntry_t* tt_entry = &bucket[i];
+        if (tt_entry->bound == TTBOUND_NONE) {
+            // Write it only if the depth is better than the stored depth. A lower depth means that it was searched farther up the search tree, so it has been searched more.
+            if (depth <= tt_entry->depth) {
+                *tt_entry = entry; // Write it.
+            }
 
             // Update bloom filter & return.
             goto done;
