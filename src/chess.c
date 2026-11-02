@@ -27,8 +27,9 @@ ChessBoard_t* NewChessBoard()
     //attack bitboards
     uint64_t attack[2] = {9132735994842316800, 16760190};
 
-    ChessBoard_t board = {bitboards, attack, pieces, 1};
-    return &board;
+    ChessBoard_t* board = malloc(sizeof(ChessBoard_t));
+    *board = (ChessBoard_t){bitboards, attack, pieces, 1};
+    return board;
 }
 
 void DeleteChessBoard(ChessBoard_t* board) {
