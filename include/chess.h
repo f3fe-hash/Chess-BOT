@@ -23,15 +23,41 @@ typedef struct Move_t
 
 typedef struct ChessBoard_t
 {
-    // 0 = black
-    // 1 = white
+    //bitboards
+    uint64_t bitboards[15];
+
+    //attack bitboards
+    uint64_t attack[2];
+    
+    //first 3 bits are the piece (from nothing to king) and 4th bit is color
+    uint8_t pieces[64];
+
+    //0 is black and 1 is white
     bool turn;
     
     // ...
 } ChessBoard_t;
 
 // Create and initialize a blank chessboard.
+/*
+bitboard decimal values generated in test.c:
+65280
+66
+36
+129
+16
+8
+16760190
+71776119061217280
+4755801206503243776
+2594073385365405696
+9295429630892703744
+1152921504606846976
+576460752303423488
+9132735994842316800
+*/
 ChessBoard_t* NewChessBoard();
+
 
 // Free the chess board
 void DeleteChessboard(ChessBoard_t* board);
@@ -43,6 +69,10 @@ void MakeMove(ChessBoard_t* const board, const Move_t move);
 // Undo a move on the chess board.
 // Takes in a constant pointer to a chess board, and a constant move.
 void UndoMove(ChessBoard_t* const board, const Move_t move);
+
+//Updates attack bitboards
+//Takes a constant pointer to the chess board.
+void UpdateAttackBitboards(ChessBoard_t* const board);
 
 // Get all legal moves for a certain color in a position.
 // Takes in a constant pointer to a constant chess board, and a color value.
