@@ -28,7 +28,7 @@ int Search(ChessBot_t* bot, int depth, int alpha, int beta) {
 
     // Get legal moves.
     uint8_t num_moves = 0;
-    Move_t* moves = GetLegalMoves(bot->chessboard, SideToMove, num_moves);
+    Move_t* moves = GetLegalMoves(bot->chessboard, SideToMove, &num_moves);
 
     // No legal moves. Either checkmate or stalemate.
     if (num_moves == 0) {
@@ -71,10 +71,15 @@ int Search(ChessBot_t* bot, int depth, int alpha, int beta) {
     }
 
     for (int i = 0; i < num_moves; i++) {
+        ChessBoard_t original;
+        memcpy(&original, bot->chessboard, sizeof(ChessBoard_t));
+
         // Search to the next depth.
         MakeMove(bot->chessboard, moves[i]);
-        int eval_cp = Search(bot, depth - 1, alpha, beta);
-        UndoMove(bot, moves[i]);
+        int eval_cp = Search(bot, depth - 1, INT32_MIN, INT32_MAX);
+
+        //UndoMove(bot, moves[i]);
+        memcpy(bot->chessboard, &original, sizeof(ChessBoard_t));
 
         // Update best eval
         if (SideToMove == 1) {
@@ -120,7 +125,7 @@ Move_t SearchMove(ChessBot_t* bot, int depth) {
     bool SideToMove = bot->chessboard->turn;
 
     uint8_t num_moves = 0;
-    Move_t* moves = GetLegalMoves(bot->chessboard, SideToMove, num_moves);
+    Move_t* moves = GetLegalMoves(bot->chessboard, SideToMove, &num_moves);
 
     if (num_moves == 0) {
         // No legal moves.
@@ -131,10 +136,15 @@ Move_t SearchMove(ChessBot_t* bot, int depth) {
     Move_t best_move;
 
     for (int i = 0; i < num_moves; i++) {
+        ChessBoard_t original;
+        memcpy(&original, bot->chessboard, sizeof(ChessBoard_t));
+
         // Search to the next depth.
         MakeMove(bot->chessboard, moves[i]);
         int eval = Search(bot, depth - 1, INT32_MIN, INT32_MAX);
-        UndoMove(bot, moves[i]);
+
+        //UndoMove(bot, moves[i]);
+        memcpy(bot->chessboard, &original, sizeof(ChessBoard_t));
 
         // Update best eval
         if (SideToMove == 1) {

@@ -60,7 +60,7 @@ ChessBoard_t* NewChessBoard();
 
 
 // Free the chess board
-void DeleteChessboard(ChessBoard_t* board);
+void DeleteChessBoard(ChessBoard_t* board);
 
 // Make a move on the chess board.
 // Takes in a constant pointer to a chess board, and a constant move.

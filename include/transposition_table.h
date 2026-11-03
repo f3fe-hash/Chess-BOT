@@ -30,8 +30,10 @@ typedef struct TranspositionTableEntry_t
     uint64_t hash; // Hash of the position.
 } TranspositionTableEntry_t;
 
-const int NUM_BUCKETS = 1024;
-const int ENTRIES_PER_BUCKET = 8;
+enum {
+    NUM_BUCKETS = 1024,
+    ENTRIES_PER_BUCKET = 8
+};
 
 typedef struct TranspositionTable_t {
     TranspositionTableEntry_t buckets[ENTRIES_PER_BUCKET][NUM_BUCKETS];

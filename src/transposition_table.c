@@ -1,9 +1,7 @@
 #include "transposition_table.h"
 
 TranspositionTable_t* NewTranspositionTable() {
-    TranspositionTable_t* tt = (TranspositionTable_t *)malloc(sizeof(TranspositionTable_t));
-    tt->bloom = 0;
-    
+    TranspositionTable_t* tt = calloc(1, sizeof(TranspositionTable_t));
     return tt;
 }
 
@@ -30,9 +28,16 @@ bool TTContains(TranspositionTable_t* tt, uint64_t hash) {
 
 TranspositionTableEntry_t GetTTEntry(TranspositionTable_t* tt, uint64_t hash, bool* found)
 {
+    if (found != NULL)
+        *found = false;
+
+    if (tt == NULL)
+        return (TranspositionTableEntry_t){};
+
     // If the bloom filter fails, it is DEFINETELY not in the tt.
     if ((tt->bloom & hash) != hash) {
-        *found = false;
+        if (found != NULL)
+            *found = false;
 
         // Return an empty entry.
         return (TranspositionTableEntry_t){};
@@ -44,8 +49,9 @@ TranspositionTableEntry_t GetTTEntry(TranspositionTable_t* tt, uint64_t hash, bo
     for (int i = 0; i < ENTRIES_PER_BUCKET; i++) {
         if (bucket[i].hash == hash) {
             // We found an entry with the same hash. It is in the tt, so return it.
+        if (found != NULL)
             *found = true;
-            return bucket[i];
+        return bucket[i];
         }
     }
 
@@ -67,21 +73,12 @@ void StoreTTEntry(TranspositionTable_t* tt, uint64_t hash, uint8_t depth, int ev
     for (int i = 0; i < ENTRIES_PER_BUCKET; i++) {
         TranspositionTableEntry_t* tt_entry = &bucket[i];
         if (tt_entry->bound == TTBOUND_NONE) {
-            // Write it only if the depth is better than the stored depth. A lower depth means that it was searched farther up the search tree, so it has been searched more.
-            if (depth <= tt_entry->depth) {
+            if (depth > tt_entry->depth) {
                 *tt_entry = entry; // Write it.
+                break;
             }
-
-            // Update bloom filter & return.
-            goto done;
         }
     }
 
-    // TODO: Implement a replacement policy. I am too lazy right now, so good luck future me.
-    return; // Dont accidentally update the bloom filter.
-
-done:
-    // Update the bloom filter.
     tt->bloom |= hash;
-    return;
 }

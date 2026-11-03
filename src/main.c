@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include "chess.h"
+#include "bot.h"
 
-int main()
-{
-    printf("Hello, world!\n");
+int main() {
+    
     return 0;
 }
